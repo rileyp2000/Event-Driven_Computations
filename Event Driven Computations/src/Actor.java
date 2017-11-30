@@ -41,8 +41,7 @@ public abstract class Actor
    */
   public boolean moreMail()
   {
-    _______________________________________
-    ...
+    return mailbox.isEmpty();
   }
 
   /**
@@ -50,8 +49,7 @@ public abstract class Actor
    */
   public void receive(Message msg)
   {
-    _______________________________________
-    ...
+    mailbox.add(msg);
   }
 
   /**
@@ -59,8 +57,7 @@ public abstract class Actor
    */
   public Message readNextMessage()
   {
-    _______________________________________
-    ...
+    return mailbox.remove();
   }
 
   public abstract void readMail();
@@ -71,8 +68,7 @@ public abstract class Actor
    */
   public void send(Actor recipient, String text)
   {
-    _______________________________________
-    ...
+    mailServer.add(new Message(this, recipient, text));
   }
 
   /**
@@ -81,8 +77,7 @@ public abstract class Actor
    */
   public void announce(String text)
   {
-    _______________________________________
-    ...
+    send(null, text);
   }
 
   /** Compares this Actor to another in alphabetical

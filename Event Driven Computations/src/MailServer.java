@@ -13,7 +13,8 @@ public class MailServer extends LinkedList<Message>{
 	}
 	
 	public void signUp(Actor actor) {
-		registeredActors.add(actor);
+		if(!registeredActors.contains(actor))
+			registeredActors.add(actor);
 	}
 
 	public void dispatch(Message msg) {
