@@ -77,9 +77,10 @@ public class Kitten extends Actor {
 					if(((Kitten)current.getSender()).receiveItem(this, item))
 						myPossessions.remove(item);
 			}
-			if(allSetFlag && this.allSet())
+		}else
+		if(allSetFlag && this.allSet())
 				send(this, "thx, all set");
-		}
+	
 
 	}
 
