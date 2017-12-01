@@ -39,41 +39,49 @@ public class Kitten extends Actor {
 	}
 
 	/**
-   * 1. Checks possessions for this Kitten and sends a "need <item>"
-   *    message to the list for each missing item.
-   * 2. Removes and processes messages from the mailbox,
-   *    one by one.
-   * Processing messages:
-   *     i)  Takes action only for messages with the text
-   *         "need <item>", "have <item>", or "ship <item>".
-   *         where <item> is the name of the item, such as "hat",
-   *         "left glove", or "right glove".
-   *         Skips all other messages.
-   *    ii)  If this is a "need" message and this Kitten has an extra item
-   *         requested, it responds with a "have <item>" message.
-   *   iii) If this is a "have" message and this Kitten is missing the offered item,
-   *        it responds with a "ship <item>" message.
-   *    iv)  If this is a "ship" message and this Kitten still has an extra item,
-   *         then it calls sender's receiveItem method.  If receiveItem
-   *         returns true, removes item from this Kitten's possessions.
-   * 3. If allSetFlag is not set and this Kitten is all set, that is has
-   *    one of each item, sends "thx, all set" to the list.
-   */
-  public void readMail()
-  {
-    if(!allSet()) {
-    	for(String item : items) 
-    		if(countPossessions(item) < 1)
-    			this.send(null, "need " + item);
-    	
-    while(this.moreMail()) {
-    	
-    }
-    		
-    }
-    	
-    	
-  }
+	 * 1. Checks possessions for this Kitten and sends a "need <item>" message to
+	 * the list for each missing item. 
+	 * 2. Removes and processes messages from the
+	 * mailbox, one by one. Processing messages: 
+	 * i) Takes action only for messages
+	 * with the text "need <item>", "have <item>", or "ship <item>". where <item> is
+	 * the name of the item, such as "hat", "left glove", or "right glove". Skips
+	 * all other messages. 
+	 * ii) If this is a "need" message and this Kitten has an
+	 * extra item requested, it responds with a "have <item>" message. 
+	 * iii) If this is a "have" message and this Kitten is missing the offered item, it responds
+	 * with a "ship <item>" message. 
+	 * iv) If this is a "ship" message and this Kitten still has an extra item, then it calls sender's receiveItem method. If
+	 * receiveItem returns true, removes item from this Kitten's possessions. 
+	 * 3. If allSetFlag is not set and this Kitten is all set, that is has one of each
+	 * item, sends "thx, all set" to the list.
+	 */
+	public void readMail() {
+		if (!allSet()) {
+			for (String item : items)
+				if (countPossessions(item) < 1)
+					this.send(null, "need " + item);
+
+			while (super.moreMail()) {
+				Message current = super.readNextMessage();
+				String msgType = current.getText().substring(0, 4);
+				String item = current.getText().substring(5).trim();
+
+				if (msgType.equalsIgnoreCase("need")) {
+					this.send(current.getSender(), "have " + item);
+				} else
+				if (msgType.equalsIgnoreCase("have") && countPossessions(item) == 0) {
+					send(current.getSender(), "ship " + item);
+				} else
+				if(msgType.equalsIgnoreCase("ship") && countPossessions(item) > 1)
+					if(((Kitten)current.getSender()).receiveItem(this, item))
+						myPossessions.remove(item);
+			}
+			if(allSetFlag && this.allSet())
+				send(this, "thx, all set");
+		}
+
+	}
 
 	public String toString() {
 		return super.toString() + " " + myPossessions;
