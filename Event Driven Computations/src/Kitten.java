@@ -61,10 +61,17 @@ public class Kitten extends Actor {
    */
   public void readMail()
   {
-    for(String item: myPossessions) {
-    	if(!myPossessions.contains(item))
+    if(!allSet()) {
+    	for(String item : items) 
+    		if(countPossessions(item) < 1)
+    			this.send(null, "need " + item);
+    	
+    while(this.moreMail()) {
+    	
+    }
     		
     }
+    	
     	
   }
 
